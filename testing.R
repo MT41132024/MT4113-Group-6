@@ -1,4 +1,5 @@
 ### First Draft of functions
+library(numDeriv)
 
 Newton <- function(start, f, data, epsilon){
   beta <- start
