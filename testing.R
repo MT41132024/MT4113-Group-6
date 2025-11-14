@@ -6,6 +6,7 @@ UVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
   iter <- 0
+  conv <- 0
   
   if (minimum == FALSE){
     f <- -f
@@ -20,7 +21,13 @@ UVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
     
     iter <- iter + 1
   }
-  return(theta)
+  
+  if (iter <= maxit){
+    conv <- 2
+  }
+  
+  return(list(estimate=theta, feval=f(theta, data$x), tolerance=abs(delta/theta),
+              conv=conv, niter=iter))
 }
 
 # Multivariate Newton Method
@@ -28,6 +35,7 @@ MVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
   iter <- 0
+  conv <- 0
   
   if (minimum == FALSE){
     f <- -f
@@ -43,7 +51,13 @@ MVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
     
     iter <- iter + 1
   }
-  return(theta)
+  
+  if (iter <= maxit){
+    conv <- 2
+  }
+  
+  return(list(estimate=theta, feval=f(theta, data$x), tolerance=abs(delta/theta),
+              conv=conv, niter=iter))
 }
 
 # Gauss-Newton Method (nls)
@@ -51,13 +65,14 @@ GN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
   iter <- 0
+  conv <- 0
   
   if (minimum == FALSE){
     f <- -f
   }
   
   while (min(abs(delta/theta)) > tol && iter <= maxit) {
-    j <- jacobian(function(x, data) data$y - f(data$x, x), theta, data = data)
+    j <- jacobian(f, theta, data = data) #function(x, data) data$y - f(data$x, x)
     r <- data$y - f(data$x, theta)
     
     g <- t(j) %*% r
@@ -68,5 +83,11 @@ GN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
     
     iter <- iter + 1
   }
-  return(theta)
+  
+  if (iter <= maxit){
+    conv <- 2
+  }
+  
+  return(list(estimate=theta, feval=f(theta, data$x), tolerance=abs(delta/theta),
+              conv=conv, niter=iter))
 }
