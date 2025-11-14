@@ -1,7 +1,8 @@
 ### First Draft of functions
 library(numDeriv)
 
-Newton <- function(start, f, data, epsilon){
+# Univariate Newton Method
+UVN <- function(start, f, data, epsilon){
   beta <- start
   delta <- 10^3
   while (abs(delta/beta) > epsilon){
@@ -14,7 +15,8 @@ Newton <- function(start, f, data, epsilon){
   return(beta)
 }
 
-Newton2D <- function(start, f, data, epsilon){
+# Multivariate Newton Method
+MVN <- function(start, f, data, epsilon){
   beta <- start
   delta <- 10^3
   # For each step, calculate gradient, hessian, solve linear system for delta
@@ -29,6 +31,21 @@ Newton2D <- function(start, f, data, epsilon){
   return(beta)
 }
 
-GaussNewton <- function(){
+# Gauss-Newton Method (nls)
+GN <- function(start, f, data, epsilon){
+  theta <- start
+  delta <- 10^3
   
+  while (min(abs(delta/theta)) > epsilon) {
+    j <- jacobian(function(x, data) data$y - f(data$x, x), theta, data = data)
+    r <- data$y - f(data$x, theta)
+    
+    g <- t(j) %*% r
+    H <- t(j) %*% j
+    
+    delta <- solve(H, -g)
+    
+    theta <- theta + delta
+  }
+  return(theta)
 }
