@@ -2,55 +2,61 @@
 library(numDeriv)
 
 # Univariate Newton Method
-UVN <- function(f, inits, data, minimum=TRUE, tol=1e-5){
+UVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
+  iter <- 0
   
   if (minimum == FALSE){
     f <- -f
   }
   
-  while (abs(delta/theta) > tol){
+  while (abs(delta/theta) > tol && iter <= maxit){
     g <- grad(f, theta, data = data)
     h <- hessian(f, theta, data = data)[1,1]
     
     delta <- -g/h
     theta <- theta + delta
+    
+    iter <- iter + 1
   }
   return(theta)
 }
 
 # Multivariate Newton Method
-MVN <- function(f, inits, data, minimum=TRUE, tol=1e-5){
+MVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
+  iter <- 0
   
   if (minimum == FALSE){
     f <- -f
   }
   
   # For each step, calculate gradient, hessian, solve linear system for delta
-  while (min(abs(delta/theta)) > tol){ # Take minimum abs. change in each 
+  while (min(abs(delta/theta)) > tol && iter <= maxit){ # Take minimum abs. change in each 
     g <- grad(f, theta, data = data)       # par, not total step size
     H <- hessian(f, theta, data = data)
     
     delta <- solve(H, -g)
-    
     theta <- theta + delta
+    
+    iter <- iter + 1
   }
   return(theta)
 }
 
 # Gauss-Newton Method (nls)
-GN <- function(f, inits, data, minimum=TRUE, tol=1e-5){
+GN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
   theta <- inits
   delta <- 10^3
+  iter <- 0
   
   if (minimum == FALSE){
     f <- -f
   }
   
-  while (min(abs(delta/theta)) > tol) {
+  while (min(abs(delta/theta)) > tol && iter <= maxit) {
     j <- jacobian(function(x, data) data$y - f(data$x, x), theta, data = data)
     r <- data$y - f(data$x, theta)
     
@@ -58,8 +64,9 @@ GN <- function(f, inits, data, minimum=TRUE, tol=1e-5){
     H <- t(j) %*% j
     
     delta <- solve(H, -g)
-    
     theta <- theta + delta
+    
+    iter <- iter + 1
   }
   return(theta)
 }
