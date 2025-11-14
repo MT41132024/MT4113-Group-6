@@ -12,7 +12,7 @@ UVN <- function(f, inits, data, minimum=TRUE, tol=1e-5, maxit=10000){
     f <- -f
   }
   
-  while (abs(delta/theta) > tol && iter <= maxit){
+  while (abs(delta/theta) > tol && iter <= maxit){ #TRY/EXCEPT => 1
     g <- grad(f, theta, data = data)
     h <- hessian(f, theta, data = data)[1,1]
     
