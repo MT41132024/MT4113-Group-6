@@ -1,0 +1,15 @@
+11/11/25:
+- Initial meeting for group members
+- Repository set up
+- Tasks allocated
+
+General To Do:
+- Code optim functions
+  - Newton's methods and NLLS (Declan)
+  - Bisection, grid, overall mega function (Pavlos)
+  - Function testing (Declan & Pavlos)
+- R package:
+  - How to (Kimberley, Alex)
+  - Making R package (Kimberley, Alex)
+  - Readme (Alex)
+- Report PDF (Kimberley)
